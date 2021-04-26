@@ -19,12 +19,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Utrust\\": "src/"
+      "Utrust\\": "AbumUtrust/"
     }
   },
   "scripts": {
     "lint": [
-      "./vendor/bin/phpcs --standard=PSR2 src/"
+      "./vendor/bin/phpcs --standard=PSR2 AbumUtrust/"
     ],
     "test": [
       "phpunit tests/"

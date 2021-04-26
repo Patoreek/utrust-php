@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Utrust\Webhook\Event;
+use AbumUtrust\Webhook\Event;
 
 class WebhookTest extends TestCase
 {

@@ -3,7 +3,7 @@ require_once './vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
 
-use Utrust\Webhook\Event;
+use AbumUtrust\Webhook\Event;
 
 // Load the env var WEBHOOKS_SECRET (using phpdotenv package)
 $webhooksSecret = getenv('WEBHOOKS_SECRET');

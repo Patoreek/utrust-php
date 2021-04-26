@@ -3,8 +3,8 @@ require_once './vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-use Utrust\ApiClient;
-use Utrust\Validator;
+use AbumUtrust\ApiClient;
+use AbumUtrust\Validator;
 
 // Load the env var API_KEY (using phpdotenv package)
 $api_key = getenv('API_KEY');

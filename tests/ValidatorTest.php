@@ -1,6 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use Utrust\Validator;
+use AbumUtrust\Validator;
 
 class ValidatorTest extends TestCase
 {

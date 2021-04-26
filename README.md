@@ -23,7 +23,7 @@ composer require utrust/utrust
 Creating a new Order:
 
 ```php
-use Utrust\ApiClient;
+use AbumUtrust\ApiClient;
 
 $utrustApi = new ApiClient('API_KEY');
 

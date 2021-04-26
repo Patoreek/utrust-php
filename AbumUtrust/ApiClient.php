@@ -1,5 +1,5 @@
 <?php
-namespace Utrust;
+namespace AbumUtrust;
 
 const SANDBOX_URL = 'https://merchants.api.sandbox-utrust.com/api/';
 const PRODUCTION_URL = 'https://merchants.api.utrust.com/api/';
