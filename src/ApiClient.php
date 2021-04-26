@@ -27,24 +27,25 @@ class ApiClient
     /**
      * Executes a POST cURL request to the Utrust API.
      *
-     * @param string $method The API method to call.
+     * @param string $endpoint request URL
      * @param array $body The required and optional fields to pass with the method.
+     * @param string $method The API method to call.
      *
      * @return array Result with the api response.
      */
-    private function post($endpoint, array $body = [])
+    private function webRequest($endpoint, array $body = [], $method = 'POST')
     {
         // Check the cURL handle has not already been initiated
         if ($this->curlHandle === null) {
             // Initiate cURL
             $this->curlHandle = curl_init();
-
             // Set options
             curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($this->curlHandle, CURLOPT_MAXREDIRS, 10);
             curl_setopt($this->curlHandle, CURLOPT_TIMEOUT, 30);
             curl_setopt($this->curlHandle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-            curl_setopt($this->curlHandle, CURLOPT_POST, 1);
+            if($method == 'POST')
+                curl_setopt($this->curlHandle, CURLOPT_POST, 1);
         }
 
         // Set headers
@@ -54,28 +55,29 @@ class ApiClient
         curl_setopt($this->curlHandle, CURLOPT_HTTPHEADER, $headers);
 
         // Set URL
-        curl_setopt($this->curlHandle, CURLOPT_URL, $this->apiUrl . 'stores/orders/');
+        curl_setopt($this->curlHandle, CURLOPT_URL, $this->apiUrl . $endpoint);
 
         // Set body
-        curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, json_encode($body));
+        if($method == 'POST')
+            curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, json_encode($body));
 
         // Execute cURL
         $response = curl_exec($this->curlHandle);
 
         // Check the response of the cURL session
-        if ($response !== false) {
-            $result = false;
-
+        if ($response !== false)
+        {
             // Prepare JSON result to object stdClass
             $decoded = json_decode($response);
 
             // Check the json decoding and set an error in the result if it failed
-            if (!empty($decoded)) {
+            if (!empty($decoded))
                 $result = $decoded;
-            } else {
+            else
                 $result = ['error' => 'Unable to parse JSON result (' . json_last_error() . ')'];
-            }
-        } else {
+        }
+        else
+        {
             // Returns the error if the response of the cURL session is false
             $result = ['errors' => 'cURL error: ' . curl_error($this->curlHandle)];
         }
@@ -86,11 +88,11 @@ class ApiClient
     /**
      * Creates a Order.
      *
-     * @param object $order The Order object.
-     * @param object $customer The Customer object.
+     * @param object $orderData The Order object.
+     * @param object $customerData The Customer object.
      *
      * @return string|object Response data.
-     * @throws Exception
+     * @throws \Exception
      */
     public function createOrder($orderData, $customerData)
     {
@@ -105,12 +107,24 @@ class ApiClient
             ],
         ];
 
-        $response = $this->post('stores/orders', $body);
+        $response = $this->webRequest('stores/orders', $body);
 
         if (isset($response->errors)) {
             throw new \Exception('Exception: Request Error! ' . print_r($response->errors, true));
         } elseif (!isset($response->data->attributes->redirect_url)) {
             throw new \Exception('Exception: Missing redirect_url!');
+        }
+
+        return $response->data;
+    }
+
+    public function createRefund($paymentId)
+    {
+        $endpoint = 'payment/' . $paymentId . "/refund";
+        $response = $this->webRequest($endpoint, null, 'GET');
+
+        if (isset($response->errors)) {
+            throw new \Exception('Exception: Request Error! ' . print_r($response->errors, true));
         }
 
         return $response->data;
